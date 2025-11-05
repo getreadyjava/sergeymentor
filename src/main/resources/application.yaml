@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: drill
+server:
+  port: 9091
+logging:
+  level:
+    root: INFO
+    ru.preworking.drill: TRACE
