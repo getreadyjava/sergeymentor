@@ -2,6 +2,7 @@ package ru.preworking.drill.controller;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,12 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import ru.preworking.drill.domain.Employee;
 import ru.preworking.drill.service.EmployeeServiceImpl;
 
-
 /**
  * CRUD на сотрудников
  * POST, GET, PUT, DELETE
- *
- * Логирование без WARN, DEBUG
  */
 @RestController
 @RequestMapping(value = "/api/v1/employees", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -48,12 +46,11 @@ public class EmployeeController {
     public ResponseEntity<Employee> getEmployeeById(@PathVariable("employeeId") String id){
         logger.trace("Получен GET-запрос на инфо о сотруднике с id {}", id);
         try {
-            // Этот сниппет предложил IDE, я счёл разумным оставить его)))
             if (id == null) {
                 logger.warn("При запросе инфо о сотруднике, в параметре запроса получен пустой id");
 
                 return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-            } // -- конец сниппета
+            }
 
             var employee = service.getById(id).orElse(null);
 
@@ -65,7 +62,8 @@ public class EmployeeController {
         }
     }
 
-    @PostMapping()
+    // @todo При создании репозитория, получение id со стороны клиента убрать
+    @PostMapping
     public ResponseEntity<Map<String, Boolean>> createEmployee(@RequestBody Employee employee){
         String id = employee.getId();
         String firstName = employee.getFirstName();
@@ -82,6 +80,53 @@ public class EmployeeController {
             logger.error("Ошибка при создании сотрудника {}", e);
 
             return new ResponseEntity<>(Map.of("success", false), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/{employeeId}")
+    public ResponseEntity<Map<String, Boolean>> updateEmployee(@PathVariable("employeeId") String id, @RequestBody Employee employee){
+        if (id == null) {
+            logger.warn("При запросе обновления сотрудника, в параметре запроса получен пустой id");
+
+            return new ResponseEntity<>(Map.of("success", false), HttpStatus.BAD_REQUEST);
+        } else {
+            logger.trace("Получен PUT-запрос на обновление записи о сотруднике с id {}", id);
+            Optional<Employee> employeeOptional = service.getById(id);
+
+            if (employeeOptional.isPresent()) {
+
+                return new ResponseEntity<>(Map.of("success", service.update(employee)), HttpStatus.OK);
+            }
+
+            return new ResponseEntity<>(Map.of("success", false), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping("/{employeeId}")
+    public ResponseEntity<Map<String, Boolean>> deleteEmployee(@PathVariable("employeeId") String id){
+        System.out.println("FIRST");
+        if (id == null) {
+            logger.warn("При запросе удаления сотрудника, в параметре запроса получен пустой id");
+
+            return new ResponseEntity<>(Map.of("success", false), HttpStatus.BAD_REQUEST);
+        } else {
+            logger.trace("Получен DELETE-запрос на удаление записи о сотруднике с id {}", id);
+
+            return new ResponseEntity<>(Map.of("success", service.delete(id)), HttpStatus.OK);
+        }
+    }
+
+    @DeleteMapping("/delete-list")
+    public ResponseEntity<Map<String, Boolean>> deleteManyEmployees(@RequestBody List<String> ids){
+        System.out.println("SECOND");
+        if (ids == null) {
+            logger.warn("При запросе удаления сотрудников, в параметре запроса получен пустой список id");
+
+            return new ResponseEntity<>(Map.of("success", false), HttpStatus.BAD_REQUEST);
+        } else {
+            logger.trace("Получен DELETE-запрос на удаление записей о сотрудниках с id {}", ids);
+
+            return new ResponseEntity<>(Map.of("success", service.deleteMany(ids)), HttpStatus.OK);
         }
     }
 }

@@ -1,27 +1,25 @@
 package ru.preworking.drill.service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Objects;
+import java.util.*;
 
 import org.springframework.stereotype.Service;
 import ru.preworking.drill.domain.Employee;
 
 @Service
-public class EmployeeServiceImpl implements EmployeeService {
+public class EmployeeServiceImpl implements EmployeeService<Employee> {
 
-    // Read
-    private final List<Employee> employees;
+    private static final Employee[] employeesArrayInitializer = {
+            Employee.of("1", "Иванов", "Иван", "Иванович"),
+            Employee.of("2", "Петров", "Петр", "Петрович"),
+            Employee.of("3", "Семёнов", "Семён", "Семёнович")
+    };
+
+    private List<Employee> employees;
 
     public EmployeeServiceImpl(){
-        employees = List.of(
-                new Employee("1", "Иванов", "Иван", "Иванович"),
-                new Employee("2", "Петров", "Петр", "Петрович"),
-                new Employee("3", "Семёнов", "Семён", "Семёнович")
-        );
+        employees = new ArrayList<>(Arrays.asList(employeesArrayInitializer));
     }
 
-    // Read
     public Optional<Employee> getById(String id){
         return employees.stream()
                 .filter(employee -> Objects.equals(id, employee.getId()))
@@ -32,25 +30,34 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employees;
     }
 
-    // Create @TODO 1) изменить сигнатуру - возвращать boolean, 2) добавить кастомное исключение
-    public void addToList(Employee e){
+    public boolean addToList(Employee e){
 
-        employees.addLast(e);
+        return employees.add(e);
     }
 
-    public void update(Employee e){
-        Optional<Employee> currentEmployee = getById(e.getId());
+    public boolean update(Employee e){
+        String id = e.getId();
+        Optional<Employee> currentEmployee = getById(id);
         currentEmployee.ifPresent(employee -> {
-            employee.setId(e.getId());
+            employee.setId(id);
             employee.setFirstName(e.getFirstName());
             employee.setSecondName(e.getSecondName());
             employee.setPatronymic(e.getPatronymic());
         });
+
+        return currentEmployee.isPresent();
     }
 
-    // Delete @TODO 1) изменить сигнатуру - возвращать boolean, 2) добавить кастомное исключение
-    public void delete(Employee e){
+    public boolean delete(String id){
 
-        employees.remove(e);
+        return employees.removeIf(employee -> Objects.equals(id, employee.getId()));
+    }
+
+    public boolean deleteMany(List<String> ids){
+        if (ids != null) {
+            return employees.removeIf(employee -> ids.contains(employee.getId()));
+        } else {
+            return false;
+        }
     }
 }

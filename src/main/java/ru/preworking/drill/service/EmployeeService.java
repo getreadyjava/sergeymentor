@@ -2,16 +2,15 @@ package ru.preworking.drill.service;
 
 import java.util.List;
 import java.util.Optional;
-import ru.preworking.drill.domain.Employee;
 
-public interface EmployeeService {
-    Optional<Employee> getById(String id);
+public interface EmployeeService<T> {
+    Optional<T> getById(String id);
 
-    List<Employee> getAll();
+    List<T> getAll();
 
-    void addToList(Employee employee);
+    boolean addToList(T employee);
 
-    void delete(Employee employee);
+    boolean delete(String id);
 
-    void update(Employee employee);
+    boolean update(T employee);
 }

@@ -2,7 +2,7 @@ spring:
   application:
     name: drill
 server:
-  port: 9091
+  port: 8091
 logging:
   level:
     root: INFO
