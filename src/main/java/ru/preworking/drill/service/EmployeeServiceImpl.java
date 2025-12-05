@@ -6,6 +6,9 @@ import org.springframework.stereotype.Service;
 import ru.preworking.drill.domain.Employee;
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * Реализует интерфейс {@link EmployeeService}
+ */
 @Slf4j
 @Service
 public class EmployeeServiceImpl implements EmployeeService<Employee> {
