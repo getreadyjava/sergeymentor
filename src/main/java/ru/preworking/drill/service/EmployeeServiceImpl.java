@@ -28,8 +28,7 @@ public class EmployeeServiceImpl implements EmployeeService<Employee> {
     public Optional<Employee> getById(String id){
         return employees.stream()
                 .filter(employee -> Objects.equals(id, employee.getId()))
-                .findFirst()
-                .get();
+                .findFirst();
     }
 
     public List<Employee> getAll(){
@@ -42,11 +41,13 @@ public class EmployeeServiceImpl implements EmployeeService<Employee> {
 
     public void update(Employee e){
         String id = e.getId();
-        Optional<Employee> employee = getById(id);
-        employee.setId(id);
-        employee.setFirstName(e.getFirstName());
-        employee.setSecondName(e.getSecondName());
-        employee.setPatronymic(e.getPatronymic());
+        Optional<Employee> optionalEmployee = getById(id);
+        optionalEmployee.ifPresent(employee -> {
+            employee.setId(id);
+            employee.setFirstName(e.getFirstName());
+            employee.setSecondName(e.getSecondName());
+            employee.setPatronymic(e.getPatronymic());
+        });
     }
 
     public void delete(String id){
