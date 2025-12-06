@@ -13,6 +13,6 @@ public class EmployeeServiceImplTests {
     // TODO переписать этот тест, после задания репозитория
     @Test
     public void testGetById() {
-        assertEquals("2", employeeService.getById("2").getId());
+        assertEquals("2", employeeService.getById("2"));
     }
 }
