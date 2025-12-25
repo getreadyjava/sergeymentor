@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 import lombok.NonNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,17 +14,22 @@ import ru.preworking.drill.domain.Employee;
 import ru.preworking.drill.service.EmployeeService;
 
 /**
- * Контроллер, обрабатывающий запросы к ресурсу и вызывающий сервис
+ * Контроллер, обрабатывающий запросы к сущности Employee
+ * Есть возможность:
+ * 1) получить список всех сотрудников,
+ * 2) получить сотрудника по id,
+ * 3) создать (нужно передавать данные в теле запроса: id, firstName, secondName, patronymic),
+ * 4) обновить (нужно передавать данные в теле запроса: id, firstName, secondName, patronymic),
+ * 5) удалить сотрудника по id
+ * 6) удалить список сотрудников по списку id (JSON массив)
  */
-@Slf4j
 @RestController
 @RequestMapping(value = "/api/v1/employees", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequiredArgsConstructor
 public class EmployeeController {
 
+    @NonNull
     private final EmployeeService service;
-    public EmployeeController(EmployeeService service){
-        this.service = service;
-    }
 
     @GetMapping
     public ResponseEntity<List<Employee>> getAllEmployees(){

@@ -15,7 +15,7 @@ public class EmployeeServiceImplTests {
     @Test
     @DisplayName("Тест получения сотрудника по id")
     public void testGetById() {
-        assertEquals("2", employeeService.getById("2"));
+        assertEquals("2", employeeService.getById("2").get().getId());
     }
 
     @Test

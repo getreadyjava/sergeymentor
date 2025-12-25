@@ -23,8 +23,10 @@
 ### При помощи IDE IntellijIDEA 
 В классе Main в IDE GigaIDE выбрать иконку старт
 
-### При помощи maven
-Через maven ``` ./mvnw spring-boot:run ```
+### При помощи maven + java
+- Выполнить команду: ``` mvn package ```, чтобы собрался файл target/drill-1.jar (настройки см. в pom.xml)
+- Перейти в папку target ```cd target```
+- Выполнить команду ```java -jar drill-1.jar```
 
 ## Как протестировать запросы?
 - Запустить проект средствами IDE или maven. Запустится на порте 8091
